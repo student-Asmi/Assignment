@@ -8,8 +8,8 @@ export default function Verify() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        // Session exists → go to profile
-        navigate("/profile");
+        // Logged in → redirect to UserList
+        navigate("/users");
       } else {
         // No session → redirect to OTP login
         navigate("/otpPath");
