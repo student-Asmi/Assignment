@@ -10,7 +10,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: "http://localhost:5173" // frontend URL
+        emailRedirectTo: "http://localhost:5173/profile" // frontend URL
       }
     });
 

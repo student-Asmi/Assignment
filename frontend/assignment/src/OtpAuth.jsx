@@ -53,7 +53,7 @@ function OtpAuth() {
         </>
       )}
       <p>{message}</p>
-      {user && <p>Welcome {user.phone}</p>}
+      {user && <p> Welcome {user.phone}</p>}
     </div>
   );
 }

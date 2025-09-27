@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Profile from "./pages/Profile.jsx";
 import { supabase } from "./supabaseClient.jsx";
@@ -6,19 +7,29 @@ import { supabase } from "./supabaseClient.jsx";
 export default function App() {
   const [user, setUser] = useState(null);
 
-useEffect(() => {
-  supabase.auth.getSession().then(({ data }) => {
-    if (data.session) setUser(data.session.user);
-  });
+  useEffect(() => {
+    // Check session on mount
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setUser(data.session.user);
+    });
 
-  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-    setUser(session?.user ?? null);
-  });
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
 
-  return () => listener.subscription.unsubscribe();
-}, []);
+    return () => subscription.unsubscribe();
+  }, []);
 
+  return (
+    <BrowserRouter>
+      <Routes>
+        {user ? <Profile /> : <Login />}
+        <Route path="/profile" element = {<Profile/>}></Route>
+      </Routes>
 
-  if (user) return <Profile />;
-  return <Login />;
+    </BrowserRouter>
+  );
 }
