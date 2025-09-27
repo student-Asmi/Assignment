@@ -4,17 +4,19 @@ import axios from "axios";
 export default function UserList() {
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/api/users");
-        setUsers(res.data.users);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-    };
-    fetchUsers();
-  }, []);
+ useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/users/public");
+      console.log("API Response:", res.data);
+      setUsers(res.data.users || []);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+  fetchUsers();
+}, []);
+
 
   const handleAudioCall = (userId) => {
     alert(`Starting audio call with user ${userId}`);

@@ -12,16 +12,15 @@ router.post("/verify", verifyOtp);
 // Protected users route
 router.get("/", verifyToken, getUsers);
 
-// Public users route (no token needed)
-router.get("/users", async (req, res) => {
-  try {
-    // Sirf safe fields bhejna (phone, gender, dob) → password ya email bilkul nahi
-    const users = await User.find({}, "phone Gender dob").lean();
-    res.json({ users });
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// // Registered users (auth protected)
+// router.get("/users", verifyToken, async (req, res) => {
+//   const users = await User.find({}, "phone Gender dob").lean();
+//   res.json({ users });
+// });
+
+// Public users (no auth needed)
+
+
 
 
 export default router;
