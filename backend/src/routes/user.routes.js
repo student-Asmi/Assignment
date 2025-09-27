@@ -19,7 +19,15 @@ router.get("/", verifyToken, getUsers);
 // });
 
 // Public users (no auth needed)
-
+router.get("/api/users/public", async (req, res) => {
+  // yaha tum dummy + registered dono bhej sakte ho
+  const dummy = [
+    { _id: "1", phone: "0000000000", Gender: "N/A", dob: "N/A" },
+    { _id: "2", phone: "1111111111", Gender: "Female", dob: "2000-01-01" }
+  ];
+  const users = await User.find({}, "phone Gender dob").lean();
+  res.json({ users: [...dummy, ...users] });
+});
 
 
 
