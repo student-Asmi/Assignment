@@ -1,16 +1,25 @@
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 import { useNavigate } from "react-router-dom"; // needed for navigate
 import "./UserList.css";
 
-const socket = io("http://localhost:5000");
+const socket = io("http://localhost:8000");
+
+import "./UserList.css";
+
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
+
+  const [genderFilter, setGenderFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -19,7 +28,7 @@ export default function UserList() {
         setUsers(res.data.users || []);
       } catch (err) {
         console.error(err);
-        setError("Failed to fetch users");
+        setError("Failed to fetch users. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -32,6 +41,7 @@ export default function UserList() {
     socket.emit("join-call", roomId);
     navigate(`/call/${roomId}?type=audio`);
     alert(`Starting audio call with ${phone}`);
+    // WebRTC audio call implementation would go here
   };
 
   const handleVideoCall = (userId, phone) => {
@@ -39,10 +49,35 @@ export default function UserList() {
     socket.emit("join-call", roomId);
     navigate(`/call/${roomId}?type=video`);
     alert(`Starting video call with ${phone}`);
+    // WebRTC video call implementation would go here
   };
 
-  if (loading) return <div className="loading-container">Loading users...</div>;
-  if (error) return <div className="error-container">{error}</div>;
+  // Filter users based on gender and search term
+  const filteredUsers = users.filter(user => {
+    const matchesGender = genderFilter === "all" || 
+                         user.Gender?.toLowerCase() === genderFilter.toLowerCase();
+    const matchesSearch = user.phone?.includes(searchTerm) || 
+                         user.Gender?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesGender && (searchTerm === "" || matchesSearch);
+  });
+
+  if (loading) return (
+    <div className="loading-container">
+      <div className="spinner"></div>
+      <p>Loading users...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="error-container">
+      <div className="error-icon">⚠️</div>
+      <p>{error}</p>
+      <button onClick={() => window.location.reload()} className="retry-btn">
+        Try Again
+      </button>
+    </div>
+  );
 
   return (
     <div className="userlist-container">
@@ -52,20 +87,69 @@ export default function UserList() {
           <p className="userlist-subtitle">Connect with other users</p>
         </div>
 
-        {users.length === 0 ? (
+        {/* Filters Section */}
+        <div className="filters-section">
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search by phone or gender..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <div className="gender-filters">
+            <button 
+              className={`filter-btn ${genderFilter === "all" ? "active" : ""}`}
+              onClick={() => setGenderFilter("all")}
+            >
+              All
+            </button>
+            <button 
+              className={`filter-btn ${genderFilter === "male" ? "active" : ""}`}
+              onClick={() => setGenderFilter("male")}
+            >
+              Male
+            </button>
+            <button 
+              className={`filter-btn ${genderFilter === "female" ? "active" : ""}`}
+              onClick={() => setGenderFilter("female")}
+            >
+              Female
+            </button>
+          </div>
+        </div>
+
+        {/* Users Count */}
+        <div className="users-count">
+          Showing {filteredUsers.length} of {users.length} users
+        </div>
+
+        {filteredUsers.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">👥</div>
             <p>No users found</p>
+            <p className="empty-subtext">
+              {searchTerm || genderFilter !== "all" 
+                ? "Try adjusting your filters" 
+                : "Be the first to join!"}
+            </p>
           </div>
         ) : (
           <div className="users-grid">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div key={user._id} className="user-card">
+                <div className="user-avatar">
+                  {user.Gender === "female" ? "👩" : "👨"}
+                </div>
                 <div className="user-info">
                   <div className="user-phone">{user.phone}</div>
                   <div className="user-details">
                     <span className="user-detail">
-                      <span className="detail-label">Gender:</span> {user.Gender || "N/A"}
+                      <span className="detail-label">Gender:</span> 
+                      <span className={`gender-tag ${user.Gender?.toLowerCase()}`}>
+                        {user.Gender || "N/A"}
+                      </span>
                     </span>
                     <span className="user-detail">
                       <span className="detail-label">DOB:</span> {user.dob || "N/A"}
