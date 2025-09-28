@@ -45,7 +45,8 @@
 // }
 
 
-
+import { io } from "socket.io-client";
+const socket = io("http://localhost:5000");
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -70,11 +71,15 @@ export default function UserList() {
   }, []);
 
   const handleAudioCall = (userId) => {
-    alert(`Starting audio call with user ${userId}`);
+    const roomId = `room-${userId}-${Date.now()}`; // unique room id
+    socket.emit("join-call", roomId);
+    navigate(`/call/${roomId}?type=audio`);
   };
 
   const handleVideoCall = (userId) => {
-    alert(`Starting video call with user ${userId}`);
+    const roomId = `room-${userId}-${Date.now()}`;
+    socket.emit("join-call", roomId);
+    navigate(`/call/${roomId}?type=video`);
   };
 
   if (loading) return <p>Loading users...</p>;
