@@ -7,10 +7,10 @@
 
 .userlist-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -21,77 +21,202 @@
 }
 
 .userlist-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #1a202c;
   margin: 0 0 0.5rem 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .userlist-subtitle {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #718096;
   margin: 0;
 }
 
+/* Filters Section */
+.filters-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.gender-filters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  padding: 0.875rem 1.5rem;
+  border: 2px solid #e2e8f0;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.filter-btn:hover:not(.active) {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.users-count {
+  text-align: center;
+  color: #718096;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* Loading and Error States */
 .loading-container, .error-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 400px;
-  font-size: 1.1rem;
-  color: #718096;
+  gap: 1rem;
 }
 
 .error-container {
-  color: #e53e3e;
-  background: #fed7d7;
-  padding: 2rem;
-  border-radius: 8px;
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
   margin: 2rem;
   text-align: center;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 3rem 2rem;
-  color: #718096;
-}
-
-.empty-icon {
+.error-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
 }
 
+.retry-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.retry-btn:hover {
+  transform: translateY(-1px);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #718096;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-subtext {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+/* Users Grid */
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
 }
 
 .user-card {
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .user-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   border-color: #667eea;
 }
 
+.user-avatar {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
 .user-info {
-  margin-bottom: 1rem;
+  flex: 1;
 }
 
 .user-phone {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: #2d3748;
   margin-bottom: 0.5rem;
 }
@@ -99,37 +224,60 @@
 .user-details {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
 
 .user-detail {
   font-size: 0.9rem;
   color: #718096;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .detail-label {
-  font-weight: 500;
+  font-weight: 600;
   color: #4a5568;
+  min-width: 60px;
+}
+
+.gender-tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.gender-tag.male {
+  background: #bee3f8;
+  color: #2c5282;
+}
+
+.gender-tag.female {
+  background: #fed7d7;
+  color: #c53030;
 }
 
 .user-actions {
   display: flex;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 100px;
 }
 
 .action-btn {
-  flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.8rem;
   border: none;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
+  white-space: nowrap;
 }
 
 .audio-btn {
@@ -144,7 +292,7 @@
 
 .action-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .action-btn:active {
@@ -152,21 +300,45 @@
 }
 
 .btn-icon {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
   .userlist-card {
     padding: 1.5rem;
     margin: 1rem;
+    border-radius: 16px;
   }
   
   .users-grid {
     grid-template-columns: 1fr;
   }
   
-  .user-actions {
+  .filters-section {
     flex-direction: column;
+  }
+  
+  .search-box {
+    min-width: auto;
+  }
+  
+  .user-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .user-detail {
+    justify-content: center;
+  }
+  
+  .user-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .action-btn {
+    flex: 1;
   }
 }
