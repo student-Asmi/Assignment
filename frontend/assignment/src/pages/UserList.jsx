@@ -1,53 +1,6 @@
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-
-// export default function UserList() {
-//   const [users, setUsers] = useState([]);
-
-//  useEffect(() => {
-//   const fetchUsers = async () => {
-//     try {
-//       const res = await axios.get("http://localhost:8000/api/users/public");
-//       console.log("API Response:", res.data);
-//       setUsers(res.data.users || []);
-//     } catch (err) {
-//       console.error("Error fetching users:", err);
-//     }
-//   };
-//   fetchUsers();
-// }, []);
-
-
-//   const handleAudioCall = (userId) => {
-//     alert(`Starting audio call with user ${userId}`);
-//     // TODO: socket.emit("startAudioCall", { to: userId });
-//   };
-
-//   const handleVideoCall = (userId) => {
-//     alert(`Starting video call with user ${userId}`);
-//     // TODO: socket.emit("startVideoCall", { to: userId });
-//   };
-
-//   return (
-//     <div style={{ padding: "20px" }}>
-//       <h2>Registered Users</h2>
-//       <ul>
-//         {users.map((u) => (
-//           <li key={u._id}>
-//             {u.phone} | {u.Gender || "N/A"} | {u.dob || "N/A"}
-//             <button onClick={() => handleAudioCall(u._id)}>📞 Audio</button>
-//             <button onClick={() => handleVideoCall(u._id)}>🎥 Video</button>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-
-
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./UserList.css"; // Create this CSS file
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -69,37 +22,68 @@ export default function UserList() {
     fetchUsers();
   }, []);
 
-  const handleAudioCall = (userId) => {
-    alert(`Starting audio call with user ${userId}`);
+  const handleAudioCall = (userId, phone) => {
+    alert(`Starting audio call with ${phone}`);
   };
 
-  const handleVideoCall = (userId) => {
-    alert(`Starting video call with user ${userId}`);
+  const handleVideoCall = (userId, phone) => {
+    alert(`Starting video call with ${phone}`);
   };
 
-  if (loading) return <p>Loading users...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) return <div className="loading-container">Loading users...</div>;
+  if (error) return <div className="error-container">{error}</div>;
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Registered Users</h2>
-      {users.length === 0 ? (
-        <p>No users found.</p>
-      ) : (
-        <ul>
-          {users.map((u) => (
-            <li key={u._id} style={{ marginBottom: "10px" }}>
-              {u.phone} | {u.Gender || "N/A"} | {u.dob || "N/A"}{" "}
-              <button onClick={() => handleAudioCall(u._id)} style={{ marginLeft: "10px" }}>
-                📞 Audio
-              </button>
-              <button onClick={() => handleVideoCall(u._id)} style={{ marginLeft: "5px" }}>
-                🎥 Video
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="userlist-container">
+      <div className="userlist-card">
+        <div className="userlist-header">
+          <h2 className="userlist-title">Registered Users</h2>
+          <p className="userlist-subtitle">Connect with other users</p>
+        </div>
+
+        {users.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">👥</div>
+            <p>No users found</p>
+          </div>
+        ) : (
+          <div className="users-grid">
+            {users.map((user) => (
+              <div key={user._id} className="user-card">
+                <div className="user-info">
+                  <div className="user-phone">{user.phone}</div>
+                  <div className="user-details">
+                    <span className="user-detail">
+                      <span className="detail-label">Gender:</span> {user.Gender || "N/A"}
+                    </span>
+                    <span className="user-detail">
+                      <span className="detail-label">DOB:</span> {user.dob || "N/A"}
+                    </span>
+                  </div>
+                </div>
+                <div className="user-actions">
+                  <button 
+                    onClick={() => handleAudioCall(user._id, user.phone)}
+                    className="action-btn audio-btn"
+                    title="Audio Call"
+                  >
+                    <span className="btn-icon">📞</span>
+                    Audio
+                  </button>
+                  <button 
+                    onClick={() => handleVideoCall(user._id, user.phone)}
+                    className="action-btn video-btn"
+                    title="Video Call"
+                  >
+                    <span className="btn-icon">🎥</span>
+                    Video
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
