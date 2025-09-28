@@ -1,13 +1,25 @@
+import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+import { useNavigate } from "react-router-dom"; // needed for navigate
 import "./UserList.css";
+
+const socket = io("http://localhost:8000");
+
+import "./UserList.css";
+
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
   const [genderFilter, setGenderFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -25,11 +37,17 @@ export default function UserList() {
   }, []);
 
   const handleAudioCall = (userId, phone) => {
+    const roomId = `room-${userId}-${Date.now()}`;
+    socket.emit("join-call", roomId);
+    navigate(`/call/${roomId}?type=audio`);
     alert(`Starting audio call with ${phone}`);
     // WebRTC audio call implementation would go here
   };
 
   const handleVideoCall = (userId, phone) => {
+    const roomId = `room-${userId}-${Date.now()}`;
+    socket.emit("join-call", roomId);
+    navigate(`/call/${roomId}?type=video`);
     alert(`Starting video call with ${phone}`);
     // WebRTC video call implementation would go here
   };
@@ -144,16 +162,14 @@ export default function UserList() {
                     className="action-btn audio-btn"
                     title="Audio Call"
                   >
-                    <span className="btn-icon">📞</span>
-                    Audio
+                    <span className="btn-icon">📞</span> Audio
                   </button>
                   <button 
                     onClick={() => handleVideoCall(user._id, user.phone)}
                     className="action-btn video-btn"
                     title="Video Call"
                   >
-                    <span className="btn-icon">🎥</span>
-                    Video
+                    <span className="btn-icon">🎥</span> Video
                   </button>
                 </div>
               </div>
