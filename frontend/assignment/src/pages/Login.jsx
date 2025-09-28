@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../supabaseClient.jsx";
-import "./Login.css"; 
+import "./Login.css"; // We'll create this CSS file
 
 export default function Login() {
   const [email, setEmail] = useState("");
